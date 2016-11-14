@@ -1,0 +1,20 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2016/06/nuspec.xsd">
+  <metadata>
+    <id>Ratchet.Code.MSIL</id>
+    <version>1.0.0.0</version>
+    <authors>rboissel</authors>
+    <owners>rboissel</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/rboissel/ratchet-msil</projectUrl>
+    <iconUrl>https://github.com/rboissel/ratchet-msil/icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes></releaseNotes>
+    <description>Ratchet MSIL is part of the Ratchet project and provide tools to manipulate MSIL/CIL within the application (disassembly, inspection, ...) </description>
+    <copyright>Copyright ©2016 Raphael Boissel</copyright>
+    <tags>ratchet msil cil code disassembly reflection inspection</tags>
+  </metadata>
+  <files>
+    <file src="ratchet-msil.dll" target="lib" />
+  </files>
+</package>
