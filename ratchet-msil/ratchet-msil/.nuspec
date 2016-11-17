@@ -17,4 +17,7 @@
   <files>
     <file src="ratchet-msil.dll" target="lib" />
   </files>
+  <references>
+    <reference file="ratchet-msil.dll" />
+  </references>
 </package>
