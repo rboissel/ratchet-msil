@@ -54,7 +54,7 @@ namespace Ratchet.Code
             /// <summary>
             /// Get the OpCode associated to this instruction.
             /// </summary>
-            public System.Reflection.Emit.OpCode OpCode { get { return _OpCode; } }
+            public System.Reflection.Emit.OpCode OpCode { get { return _OpCode; } set { _OpCode = value; } }
             /// <summary>
             /// Get the Data associated to this instruction. NULL if the opcode doesn't have any data associated with it.
             /// </summary>
@@ -72,6 +72,15 @@ namespace Ratchet.Code
                     if (_OpCode.FlowControl == System.Reflection.Emit.FlowControl.Call && (_Data is MethodBase)) { return _OpCode.Name + " " + (_Data as MethodBase).Name; }
                     return _OpCode.Name + " " + _Data.ToString();
                 }
+            }
+
+            /// <summary>
+            /// Emit this instruction into a pre-existing ILGenerator
+            /// </summary>
+            /// <param name="ILGenerator">The target ILGenerator</param>
+            public void Emit(System.Reflection.Emit.ILGenerator ILGenerator)
+            {
+                MSIL_emit.emit(_OpCode, _Data, ILGenerator);
             }
         }
 
