@@ -42,11 +42,16 @@ namespace Ratchet.Code
             public virtual System.Reflection.LocalVariableInfo ResolveLocal(int LocalIndex) { return null; }
         }
 
+        /// <summary>
+        /// Represent an MSIL Instruction incuding the opcode and the data associated with it.
+        /// the data is stored as an object type use 'is' and 'as' to manipulate it.
+        /// </summary>
         public class Instruction
         {
             internal System.Reflection.Emit.OpCode _OpCode = System.Reflection.Emit.OpCodes.Unaligned;
             internal object _Data = null;
             internal int _Offset = -1;
+ 
             /// <summary>
             /// Get the offset of the instruction in the source bytecode. If unknown it is set to -1.
             /// </summary>
@@ -73,6 +78,7 @@ namespace Ratchet.Code
                     return _OpCode.Name + " " + _Data.ToString();
                 }
             }
+
 
             /// <summary>
             /// Emit this instruction into a pre-existing ILGenerator
@@ -138,6 +144,27 @@ namespace Ratchet.Code
             MSIL_patcher.PatchJump(opcodes);
             MSIL_patcher.PatchLocals(opcodes, Resolver);
             return opcodes;
+        }
+
+        /// <summary>
+        /// Write the specified instruction list into the method builder. There is no need to manage labels or locals they will be created by this method.
+        /// </summary>
+        /// <param name="Instructions">The list of instruction to emit</param>
+        /// <param name="MethodBuilder">The Method builder recieving the instructions</param>
+        static public void EmitMethod(List<Instruction> Instructions, System.Reflection.Emit.MethodBuilder MethodBuilder)
+        {
+            MSIL_emit.emitMethod(Instructions, MethodBuilder.GetILGenerator());
+        }
+
+
+        /// <summary>
+        /// Write the specified instruction list into the method builder. There is no need to manage labels or locals they will be created by this method.
+        /// </summary>
+        /// <param name="Instructions">The list of instruction to emit</param>
+        /// <param name="ILGenerator">The ILGenerator recieving the instructions</param>
+        static public void EmitMethod(List<Instruction> Instructions, System.Reflection.Emit.ILGenerator ILGenerator)
+        {
+            MSIL_emit.emitMethod(Instructions, ILGenerator);
         }
     }
 }

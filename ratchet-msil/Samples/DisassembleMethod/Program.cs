@@ -11,8 +11,6 @@ namespace DisassembleMethod
             return  a + b;
         }
 
-
-
         static void Main(string[] args)
         {
             Console.WriteLine("Simple Add:");

@@ -20,20 +20,14 @@ namespace PatchMethod
             System.Reflection.Emit.ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("module");
             System.Reflection.Emit.TypeBuilder typeBuilder = moduleBuilder.DefineType("program", System.Reflection.TypeAttributes.Public);
             System.Reflection.Emit.MethodBuilder methodBuilder = typeBuilder.DefineMethod("simpleSub", System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.HideBySig, typeof(int),  new Type[] { typeof(int) , typeof(int) });
-            System.Reflection.Emit.ILGenerator ILGenerator = methodBuilder.GetILGenerator();
-            foreach (System.Reflection.LocalVariableInfo local in (typeof(Program).GetMethod("simpleAdd")).GetMethodBody().LocalVariables)
-            {
-                ILGenerator.DeclareLocal(local.LocalType);
-            }
 
+            List<MSIL.Instruction> patchedMethod = new List<MSIL.Instruction>();
             foreach (MSIL.Instruction instruction in MSIL.ReadMethod(typeof(Program).GetMethod("simpleAdd")))
             {
-                // We should patch the branch and declare a label instead but don't bother for the simplicity of the sample
-                // Banching are useless in this method
-                if (instruction.OpCode.FlowControl == System.Reflection.Emit.FlowControl.Branch) { continue; }
                 if (instruction.OpCode == System.Reflection.Emit.OpCodes.Add) { instruction.OpCode = System.Reflection.Emit.OpCodes.Sub; }
-                instruction.Emit(ILGenerator);
+                patchedMethod.Add(instruction);
             }
+            MSIL.EmitMethod(patchedMethod, methodBuilder);
 
             Type type = typeBuilder.CreateType();
             System.Reflection.MethodInfo pathedMethod = type.GetMethod("simpleSub");

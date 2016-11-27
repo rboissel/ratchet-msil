@@ -126,5 +126,78 @@ namespace Ratchet.Code
                 }
             }
         }
+
+        static public void emitMethod(List<MSIL.Instruction> Instructions, System.Reflection.Emit.ILGenerator ILGenerator)
+        {
+            Instructions = new List<MSIL.Instruction>(Instructions);
+            Dictionary<int, System.Reflection.Emit.Label> labels = new Dictionary<int, System.Reflection.Emit.Label>();
+            Dictionary<int, System.Reflection.LocalVariableInfo> locals = new Dictionary<int, System.Reflection.LocalVariableInfo>();
+
+            {
+                HashSet<int> uniqueOffset = new HashSet<int>();
+                for (int n = 0; n < Instructions.Count; n++)
+                {
+                    if (Instructions[n] == null) { continue; }
+                    int offset = Instructions[n].Offset;
+                    if (uniqueOffset.Contains(offset))
+                    {
+                        Dictionary<int, MSIL.Instruction> instructionRemap = new Dictionary<int, MSIL.Instruction>();
+                        // Conflicting offset we need to patch all of them
+                        for (n = 0; n < Instructions.Count; n++)
+                        {
+                            int hash = Instructions[n].GetHashCode();
+                            Instructions[n] = new MSIL.Instruction(Instructions[n].OpCode, Instructions[n].Data) { _Offset = n };
+                            instructionRemap.Add(hash, Instructions[n]);
+                        }
+                        for (n = 0; n < Instructions.Count; n++)
+                        {
+                            if (Instructions[n].Data != null && (Instructions[n].Data is MSIL.Instruction))
+                            {
+                                Instructions[n].Data = instructionRemap[(Instructions[n].Data as MSIL.Instruction).GetHashCode()];
+                            }
+                        }
+                        break;
+                    }
+                    uniqueOffset.Add(offset);
+                }
+            }
+
+            for (int n = 0; n < Instructions.Count; n++)
+            {
+                if (Instructions[n] == null) { continue; }
+                if (Instructions[n].Data != null && (Instructions[n].Data is MSIL.Instruction))
+                {
+                    int labelPos = (Instructions[n].Data as MSIL.Instruction).Offset;
+                    System.Reflection.Emit.Label label;
+                    if (!labels.TryGetValue(labelPos, out label))
+                    {
+                        label = ILGenerator.DefineLabel();
+                        labels.Add(labelPos, label);
+                    }
+                    Instructions[n] = new MSIL.Instruction(Instructions[n].OpCode, label) { _Offset = Instructions[n]._Offset };
+                }
+                else if (Instructions[n].Data != null && (Instructions[n].Data is System.Reflection.LocalVariableInfo))
+                {
+                    int localIndex = (Instructions[n].Data as System.Reflection.LocalVariableInfo).LocalIndex;
+                    System.Reflection.LocalVariableInfo local;
+                    if (!locals.TryGetValue(localIndex, out local))
+                    {
+                        local = ILGenerator.DeclareLocal((Instructions[n].Data as System.Reflection.LocalVariableInfo).LocalType, (Instructions[n].Data as System.Reflection.LocalVariableInfo).IsPinned);
+                        locals.Add(localIndex, local);
+                    }
+                    Instructions[n] = new MSIL.Instruction(Instructions[n].OpCode, local) { _Offset = Instructions[n]._Offset };
+                }
+            }
+
+            for (int n = 0; n < Instructions.Count; n++)
+            {
+                System.Reflection.Emit.Label label;
+                if (labels.TryGetValue(Instructions[n].Offset, out label))
+                {
+                    ILGenerator.MarkLabel(label);
+                }
+                Instructions[n].Emit(ILGenerator);
+            }
+        }
     }
 }
