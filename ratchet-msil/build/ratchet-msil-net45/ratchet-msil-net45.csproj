@@ -4,35 +4,34 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{755AE9EF-BBE7-4BB7-BBAD-4F8ED7CB2560}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{0DBC6C85-B5A2-4471-A74B-8A3B52E78124}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DisassembleMethod</RootNamespace>
-    <AssemblyName>DisassembleMethod</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>ratchet_msil</RootNamespace>
+    <AssemblyName>ratchet-msil</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\samples\</OutputPath>
+    <OutputPath>..\..\bin\Debug\ratchet-msil\lib\net45\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\bin\Debug\ratchet-msil\lib\net45\ratchet-msil.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\samples\</OutputPath>
+    <OutputPath>..\..\bin\Release\ratchet-msil\lib\net45\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\..\bin\Release\ratchet-msil\lib\net45\ratchet-msil.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,19 +44,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="..\..\ratchet-msil\msil.cs">
+      <Link>msil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ratchet-msil\msil_dasm.cs">
+      <Link>msil_dasm.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ratchet-msil\msil_emit.cs">
+      <Link>msil_emit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ratchet-msil\msil_patcher.cs">
+      <Link>msil_patcher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ratchet-msil\msil_resolvers.cs">
+      <Link>msil_resolvers.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\ratchet-msil\ratchet-msil.csproj">
-      <Project>{47e0c473-3250-4546-bd6d-58035637c010}</Project>
-      <Name>ratchet-msil</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -12,13 +12,7 @@
     <releaseNotes></releaseNotes>
     <description>Ratchet MSIL is part of the Ratchet project and provide tools to manipulate MSIL/CIL within the application (disassembly, inspection, ...) </description>
     <copyright>Copyright ©2016 Raphael Boissel</copyright>
+    <language>en-US</language>
     <tags>ratchet msil cil code disassembly reflection inspection</tags>
-    <references>
-      <reference file="ratchet-msil.dll" />
-    </references>
   </metadata>
-  <files>
-    <file src="ratchet-msil.dll" target="lib" />
-  </files>
-
 </package>
