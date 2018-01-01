@@ -107,7 +107,9 @@ namespace Ratchet.Code
         /// <returns>The list of intruction contained in the method</returns>
         static public List<Instruction> ReadMethod(System.Reflection.MethodBase MethodBase, Resolver Resolver)
         {
-            return ReadMethod(MethodBase.GetMethodBody().GetILAsByteArray(), Resolver);
+            System.Reflection.MethodBody methodBody = MethodBase.GetMethodBody();
+            if (methodBody == null) { return new List<Instruction>(); }
+            return ReadMethod(methodBody.GetILAsByteArray(), Resolver);
         }
 
         /// <summary>
@@ -132,6 +134,8 @@ namespace Ratchet.Code
         static public List<Instruction> ReadMethod(byte[] MethodByteCode, Resolver Resolver)
         {
             List<Instruction> opcodes = new List<Instruction>();
+            if (MethodByteCode == null) { return new List<Instruction>(); }
+
             int offset = 0;
             while (offset < MethodByteCode.Length)
             {
@@ -143,6 +147,7 @@ namespace Ratchet.Code
             MSIL_patcher.PatchToken(opcodes, Resolver);
             MSIL_patcher.PatchJump(opcodes);
             MSIL_patcher.PatchLocals(opcodes, Resolver);
+            MSIL_patcher.PatchLdArgs(opcodes);
             return opcodes;
         }
 

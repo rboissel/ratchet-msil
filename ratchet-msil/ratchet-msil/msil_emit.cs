@@ -108,6 +108,31 @@ namespace Ratchet.Code
                         throw new InvalidProgramException("Invalid OpCode and Data combinaison: " + OpCode.ToString() + " " + Data.ToString());
                     }
                 }
+                else if (OpCode == System.Reflection.Emit.OpCodes.Ldarg_0 ||
+                         OpCode == System.Reflection.Emit.OpCodes.Ldarg_1 ||
+                         OpCode == System.Reflection.Emit.OpCodes.Ldarg_2 ||
+                         OpCode == System.Reflection.Emit.OpCodes.Ldarg_3 ||
+                         OpCode == System.Reflection.Emit.OpCodes.Ldarg_S)
+                {
+                    int argIndx = (int)Data;
+                    switch (argIndx)
+                    {
+                        case 0: Generator.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); break;
+                        case 1: Generator.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); break;
+                        case 2: Generator.Emit(System.Reflection.Emit.OpCodes.Ldarg_2); break;
+                        case 3: Generator.Emit(System.Reflection.Emit.OpCodes.Ldarg_3); break;
+                        default:
+                            if (argIndx < 256)
+                            {
+                                Generator.Emit(System.Reflection.Emit.OpCodes.Ldarg_S, (byte)argIndx);
+                            }
+                            else
+                            {
+                                Generator.Emit(System.Reflection.Emit.OpCodes.Ldarg, argIndx);
+                            }
+                            break;
+                    }
+                }
                 else
                 {
                     if (Data == null) { Generator.Emit(OpCode); }

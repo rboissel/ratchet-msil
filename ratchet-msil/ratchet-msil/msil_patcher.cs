@@ -54,6 +54,11 @@ namespace Ratchet.Code
                     object data = Resolver.ResolveString((int)((MSIL.MetadataToken)opcode.Data).Token);
                     if (data != null) { opcode._Data = data; }
                 }
+                if (opcode.OpCode == System.Reflection.Emit.OpCodes.Initobj)
+                {
+                    object data = Resolver.ResolveType((int)((MSIL.MetadataToken)opcode.Data).Token);
+                    if (data != null) { opcode._Data = data; }
+                }
                 if (opcode.OpCode == System.Reflection.Emit.OpCodes.Ldtoken)
                 {
                     // Keep the token
@@ -83,6 +88,18 @@ namespace Ratchet.Code
                 else if(opcode.OpCode == System.Reflection.Emit.OpCodes.Stloc_3) { object local = resolver.ResolveLocal(3); if (local != null) { opcode._Data = local; opcode._OpCode = System.Reflection.Emit.OpCodes.Stloc; } }
                 else if(opcode.OpCode == System.Reflection.Emit.OpCodes.Stloc) { object local = resolver.ResolveLocal((int)opcode._Data); if (local != null) { opcode._Data = local; } }
                 else if(opcode.OpCode == System.Reflection.Emit.OpCodes.Stloc_S) { object local = resolver.ResolveLocal((byte)opcode._Data); if (local != null) { opcode._Data = local; opcode._OpCode = System.Reflection.Emit.OpCodes.Stloc; } }
+            }
+        }
+
+        static public void PatchLdArgs(List<MSIL.Instruction> opcodes)
+        {
+            foreach (MSIL.Instruction opcode in opcodes)
+            {
+                if (opcode.OpCode == System.Reflection.Emit.OpCodes.Ldarg_0) { opcode._Data = (int)0; opcode._OpCode = System.Reflection.Emit.OpCodes.Ldarg; }
+                else if (opcode.OpCode == System.Reflection.Emit.OpCodes.Ldarg_1) { opcode._Data = (int)1; opcode._OpCode = System.Reflection.Emit.OpCodes.Ldarg; }
+                else if (opcode.OpCode == System.Reflection.Emit.OpCodes.Ldarg_2) { opcode._Data = (int)2; opcode._OpCode = System.Reflection.Emit.OpCodes.Ldarg; }
+                else if (opcode.OpCode == System.Reflection.Emit.OpCodes.Ldarg_3) { opcode._Data = (int)3; opcode._OpCode = System.Reflection.Emit.OpCodes.Ldarg; }
+                else if (opcode.OpCode == System.Reflection.Emit.OpCodes.Ldarg_S) { opcode._Data = (int)(byte)opcode._Data; opcode._OpCode = System.Reflection.Emit.OpCodes.Ldarg; }
             }
         }
 
